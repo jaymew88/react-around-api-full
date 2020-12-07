@@ -5,18 +5,21 @@ const bcrypt = require('bcryptjs');
 const usersSchema = new mongoose.Schema({
   name: {
     type: String,
+    default: "Jacques Cousteau",
     required: true,
     minlength: 2,
     maxlength: 30,
   },
   about: {
     type: String,
+    default: "Explorer",
     required: true,
     minlength: 2,
     maxlength: 30,
   },
   avatar: {
     type: String,
+    default: "https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg",
     required: true,
     validate: {
       validator(v) {
