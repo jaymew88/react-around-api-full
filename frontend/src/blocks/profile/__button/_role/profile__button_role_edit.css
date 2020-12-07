@@ -1,0 +1,15 @@
+.profile__button_role_edit {
+  background: url('../../../../images/edit-btn.svg') no-repeat;
+  margin-top: 20px;
+  border: 1px solid #FFFFFF;
+  height: 18px;
+  width: 18px;
+}
+
+@media (min-width: 1024px) {
+  .profile__button_role_edit {
+    height: 24px;
+    width: 24px;
+    margin: 16px 0 0 24px;
+  }
+}

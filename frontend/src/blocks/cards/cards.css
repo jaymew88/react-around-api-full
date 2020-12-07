@@ -1,0 +1,11 @@
+@import url(../cards/__list/cards__list.css); 
+
+.cards {
+  margin: 36px 0 0;
+}
+
+@media (min-width: 1024px) {
+  .cards {
+    margin-top: 50px;
+  }
+}

@@ -1,0 +1,13 @@
+.popup__title {
+  font-weight: 900;
+  font-size: 18px;
+  color: #000000;
+  margin: 0 0 36px 0;
+}
+
+@media (min-width: 768px) {
+  .popup__title {
+    font-size: 24px;
+    margin: 0 0 50px 0;
+  }
+}

@@ -1,0 +1,11 @@
+.popup__title_type_auth {
+  text-align: center;
+  margin: 0 auto 30px;
+}
+
+@media (min-width: 768px) {
+  .popup__title_type_auth {
+    margin: 0 auto 40px;
+    
+  }
+}

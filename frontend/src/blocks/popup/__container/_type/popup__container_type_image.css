@@ -1,0 +1,14 @@
+.popup__container_type_image {
+  background: transparent;
+  box-sizing: border-box;
+  border-radius: 0px;
+  padding: 0;
+  margin: 0;
+  max-width: 75vw;
+}
+
+@media (min-width: 900px) {
+  .popup__container_type_image {
+    max-width: 670px;
+  }
+}

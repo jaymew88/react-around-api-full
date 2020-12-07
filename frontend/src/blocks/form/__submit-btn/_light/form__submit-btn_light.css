@@ -1,0 +1,15 @@
+.form__submit-btn_light {
+  background-color: #fff;
+  color: #000;
+  position: absolute;
+  bottom: 0;
+  right: auto;
+  font-style: normal;
+  font-size: 16px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+
+.form__submit-btn_light:hover {
+  background: rgba(265, 265, 265, 0.8);
+}

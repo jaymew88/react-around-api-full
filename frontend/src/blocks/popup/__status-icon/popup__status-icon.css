@@ -1,0 +1,16 @@
+@import url(./_type/popup__status-icon_type_error.css);
+@import url(./_type/popup__status-icon_type_success.css);
+
+.popup__status-icon {
+  width: 120px;
+  height:120px;
+  background-color: #fff;
+  margin: 30px auto 40px;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 768px) {
+  .popup__status-icon {
+    margin: 40px auto 30px;
+  }
+}

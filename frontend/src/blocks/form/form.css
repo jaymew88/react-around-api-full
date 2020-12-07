@@ -1,0 +1,10 @@
+@import url(../form/__input/form__input.css);
+@import url(../form/__input-error/form__input-error.css);
+@import url(../form/__label/form__label.css);
+@import url(../form/__submit-btn/form__submit-btn.css);
+@import url(../form/__title/form__title.css);
+@import url(../form/_auth/form_auth.css);
+
+.form {
+  display: block;
+}
