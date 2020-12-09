@@ -1,11 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { NODE_ENV, JWT_SECRET } = process.env;
-
-const handleAuthError = (res) => {
-  res
-    .status(401)
-    .send({ message: 'Authorization Error' });
-};
+const { UnauthorizeErr } = require('../errors/unauth-err');
 
 const extractBearerToken = (header) => {
   return header.replace('Bearer ', '');
@@ -13,8 +8,9 @@ const extractBearerToken = (header) => {
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
+
   if(!authorization || !authorization.startsWith('Bearer ')) {
-    return handleAuthError(res);
+    throw new UnauthorizeErr('Authorization Required');
   }
 
   const token = extractBearerToken(authorization);
@@ -23,6 +19,8 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'secret-key');
   } catch (err) {
-    return handleAuthError(res);
+    throw new UnauthorizeErr('Authorization Required');
   }
+  req.user = payload;
+  next();
 }

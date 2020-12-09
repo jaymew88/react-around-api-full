@@ -35,10 +35,22 @@ function App() {
   // Login and Register
   const history = useHistory();
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState(null);
+  const [userEmail, setUserEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isInfoToolTipOpen, setIsToolTipOpen] = useState(false);
   const [authSuccess, setAuthSuccess] = useState(false);
+
+  // Checks for local Storage token
+  // React.useEffect(() => {
+  //   if (localStorage.getItem('token'));
+  //     setToken(localStorage.getItem('token'));
+  // }, [token]);
  
+  // API request to verify jwt
+  // React.useEffect(() => {
+  //   if (localStorage)
+  // });
+
   React.useEffect(() => {
     api.getUserInfo().then((userProfile) => {
         setCurrentUser(userProfile);
@@ -69,8 +81,10 @@ function App() {
             history.push("/");
           }
         }).catch((err) => console.log(err));
+    } else {
+      setLoggedIn(false);
     }
-  } 
+  }
 
   function handleSignup({ email, password }) {
     auth.registerUser(email, password)
@@ -91,7 +105,7 @@ function App() {
   function handleSignin({ email, password }) {
     auth.loginUser(email, password)
       .then((data) => {
-        if (data.token) {
+        if (data && data.token) {
           setLoggedIn(true);
           localStorage.setItem("token", data.token);
           history.push("/");

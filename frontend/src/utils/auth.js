@@ -19,6 +19,9 @@ class Auth {
       body: JSON.stringify({
         email: email,
         password: password,
+        name: "Name",
+        about: "About",
+        avatar: "https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg"
       }),
     }).then(this._serverResCheck);
   }
@@ -36,6 +39,7 @@ class Auth {
 
   checkUserValidity(token) {
     return fetch(`${this._baseUrl}/users/me`, {
+      method: 'GET',
       headers: {
         ...this._headers,
         Authorization: `Bearer ${token}`

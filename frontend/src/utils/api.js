@@ -1,12 +1,20 @@
 class Api {
   constructor({ baseUrl, headers }) {
-    this.headers = headers; 
+    this._headers = headers; 
     this.baseUrl = baseUrl;
+  }
+
+  setHeader(token) {
+    this._headers = {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+    return
   }
 
   getInitialCards() {
     return fetch(this.baseUrl + '/cards', {
-      headers: this.headers,
+      headers: this._headers,
   })
     .then(res => {
       if (res.ok) {
@@ -20,7 +28,7 @@ class Api {
 
   getUserInfo() {
     return fetch(this.baseUrl + '/users/me', {
-      headers: this.headers,
+      headers: this._headers,
     })
       .then(res => {
         if (res.ok) {
@@ -35,7 +43,7 @@ class Api {
   newCard({ name, link }) {
     return fetch(this.baseUrl + '/cards', {
       method: "POST",
-      headers: this.headers,
+      headers: this._headers,
       body: JSON.stringify({
         name, 
         link
@@ -54,7 +62,7 @@ class Api {
   deleteCard(cardId) {
     return fetch(this.baseUrl + '/cards/' + cardId, {
       method: "DELETE",
-      headers: this.headers,
+      headers: this._headers,
   })
       .then(res => {
           if (res.ok) {
@@ -69,7 +77,7 @@ class Api {
   updateLike(cardId, cardLiked) {
     return fetch(this.baseUrl + '/cards/likes/' + cardId, {
       method: cardLiked ? "PUT" : "DELETE",
-      headers: this.headers,
+      headers: this._headers,
   })
     .then(res => {
         if (res.ok) {
@@ -84,7 +92,7 @@ class Api {
   editUserInfo({ name: newName, about: newJob }) {
     return fetch(this.baseUrl + '/users/me', {
       method: "PATCH",
-      headers: this.headers,
+      headers: this._headers,
       body: JSON.stringify({ 
         name: newName, 
         about: newJob })
@@ -102,7 +110,7 @@ class Api {
   setUserAvatar({ avatar }) {
     return fetch(this.baseUrl + '/users/me/avatar', {
       method: "PATCH",
-      headers: this.headers,
+      headers: this._headers,
       body: JSON.stringify({ avatar })
     })
       .then(res => {
@@ -117,11 +125,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "https://around.nomoreparties.co/v1/group-1",
-  headers: {
-    authorization: "221729e2-57e6-4114-b977-8051f88d50cb",
-    "Content-Type": "application/json"
-  }
+  baseUrl: "https://api.jaymew88.students.nomoreparties.site",
 });
 
 export default api;
