@@ -16,12 +16,12 @@ routes.get('/me', getMe);
 routes.patch('/me', bodyParser.json(), celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2),
+    about: Joi.string().required().min(2).max(30),
   }),
 }), updateUser);
 routes.patch('/me/avatar', bodyParser.json(), celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required(),
+    avatar: Joi.string().required().uri(),
   }),
 }), updateAvatar);
 

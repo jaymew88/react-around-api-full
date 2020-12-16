@@ -1,15 +1,19 @@
+const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const BadRequestErr = require('../errors/badrequest-err');
-const UnauthorizedErr = require('../errors/unauth-err');
+const UnauthorizationErr = require('../errors/unauth-err');
 const NotFoundErr = require('../errors/not-found-err');
-
-const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => {
+      if (users === undefined) {
+        throw new NotFoundErr('No users found');
+      }
+      res.send({ data: users })
+     })
     .catch(next);
 };
 
@@ -51,13 +55,26 @@ const getMe = (req, res, next) => {
 }
 
 const createUser = (req, res, next) => {
-  const { name, about, avatar, email } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
   bcrypt.hash(req.body.password, 10).then((hash) => {
   User.create({ name, about, avatar, email, password:hash })
     .then((user) => res.send({ data: user }))
     .catch(next)
-  });
+  })
+  .then((user) => {
+    const token =jwt.sign(
+      { _id: user._id},
+      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+      { expiresIn: '7d' }
+      );
+    return res.send({ data: user, token });
+  }).catch((err) => {
+    if (err.name === 'ValidationError') {
+      throw new BadRequestErr({ message: 'User validation failed' })
+    }
+  })
+  .catch(next);
 };
 
 const updateUser = (req, res, next) => {
@@ -89,20 +106,23 @@ const updateAvatar = (req, res, next) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findUserByCredentials(email, password)
-  .then((user) => {
-    const token = jwt.sign(
-      { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-      { expiresIn: '7d' }
-    );
-    res.cookie('token', token, { httpOnly: true });
-    res.send({ token });
-  })
-  .catch(() => {
-    throw new UnauthorizedErr({ message: 'User ID or Email incorrect' });
-  }).catch(next);
-};
+  User.findUserByCredentials({ email, password })
+    .then((user) => {
+      if (!user) {
+        throw new UnauthorizationErr({ message: 'Incorrect password or email' });
+      }
+      return user;
+    })
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user.id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' }
+        );
+        res.send({ token });
+      })
+      .catch(next);
+    }
 
 module.exports = {
   getUsers,

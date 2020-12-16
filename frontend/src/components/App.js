@@ -36,7 +36,6 @@ function App() {
   const history = useHistory();
   const [loggedIn, setLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isInfoToolTipOpen, setIsToolTipOpen] = useState(false);
   const [authSuccess, setAuthSuccess] = useState(false);
 
@@ -81,9 +80,7 @@ function App() {
             history.push("/");
           }
         }).catch((err) => console.log(err));
-    } else {
-      setLoggedIn(false);
-    }
+    } 
   }
 
   function handleSignup({ email, password }) {

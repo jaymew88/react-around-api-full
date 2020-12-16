@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
 const cards = require('./routes/cards');
@@ -11,7 +10,6 @@ const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
-const app = express();
 
 mongoose.connect('mongodb://localhost:27017/aroundb', {
   useNewUrlParser: true,
@@ -19,11 +17,7 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
   useFindAndModify: false
 });
 
-app.use(cors());
-app.options('*', cors());
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const app = express();
 
 app.use(requestLogger);
 app.get('/crash-test', () => {
@@ -31,6 +25,9 @@ app.get('/crash-test', () => {
     throw new Error('Server will crash now');
   }, 0);
 });
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -53,7 +50,7 @@ app.use(auth);
 app.use('/cards', cards);
 app.use('/users', users);
 
-app.get('*', (req,res)=>{
+app.get('*',(req,res)=>{
   return res.status(404).send({ "message": "Requested resource not found" });
  });
 
