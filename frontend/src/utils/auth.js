@@ -1,7 +1,7 @@
 class Auth {
   constructor({ baseUrl, headers }) {
-    this._baseUrl = baseUrl;
-    this._headers = headers;
+    this.baseUrl = baseUrl;
+    this.headers = headers;
   }
 
   _serverResCheck(res){
@@ -11,45 +11,48 @@ class Auth {
     return Promise.reject(`Error: ${res.status}`);
   }
 
-
   registerUser(email, password) {
-    return fetch(`${this._baseUrl}/signup`, {
+    return fetch(`${this.baseUrl}/signup`, {
       method: "POST",
-      headers: this._headers,
+      headers: this.headers,
       body: JSON.stringify({
         email: email,
         password: password,
-        name: "Name",
-        about: "About",
-        avatar: "https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg"
+        // name: "Name",
+        // about: "About",
+        // avatar: "https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg"
       }),
     }).then(this._serverResCheck);
   }
 
   loginUser(email, password) {
-    return fetch(`${this._baseUrl}/signin`, {
+    return fetch(`${this.baseUrl}/signin`, {
       method: "POST",
-      headers: this._headers,
+      headers: this.headers,
       body: JSON.stringify({
         email: email,
         password: password
       }),
+    }).then((data) =>{
+      localStorage.setItem('jwt', data.token)
+      return data.user;
     }).then(this._serverResCheck);
   }
 
   checkUserValidity(token) {
-    return fetch(`${this._baseUrl}/users/me`, {
+    return fetch(`${this.baseUrl}/users/me`, {
       method: 'GET',
       headers: {
-        ...this._headers,
-        Authorization: `Bearer ${token}`
+        ...this.headers,
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       },
     }).then(this._serverResCheck);
   }
 }
 
 const auth = new Auth({
-  baseUrl: "https://api.jaymew88.students.nomoreparties.site",
+  baseUrl: "http://api.jaymew88.students.nomoreparties.site",
+  //baseUrl: "https://register.nomoreparties.co",
   headers: {
     "Content-Type": "application/json",
   },

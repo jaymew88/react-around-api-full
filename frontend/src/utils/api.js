@@ -4,40 +4,31 @@ class Api {
     this.baseUrl = baseUrl;
   }
 
-  setHeader(token) {
+  _serverResCheck(res){
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Error: ${res.status}`);
+  }
+
+  setToken(token) {
     this._headers = {
       "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json"
     }
     return
-  }
+  } 
 
   getInitialCards() {
     return fetch(this.baseUrl + '/cards', {
       headers: this._headers,
-  })
-    .then(res => {
-      if (res.ok) {
-          return res.json();
-      } else {
-          return Promise.reject('Error: ' + res.status);
-      }
-    })
-    .catch((err) => console.log(err)); 
+    }).then(this._serverResCheck);
   }
 
   getUserInfo() {
     return fetch(this.baseUrl + '/users/me', {
       headers: this._headers,
-    })
-      .then(res => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Error: ${res.status}`);
-        }
-      })
-      .catch((err) => console.log(err)); 
+    }).then(this._serverResCheck);    
   }
 
   newCard({ name, link }) {
@@ -48,45 +39,21 @@ class Api {
         name, 
         link
        })
-    })
-      .then(res => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Error: ${res.status}`);
-        }
-      })
-      .catch((err) => console.log(err));
+    }).then(this._serverResCheck);
   }
 
   deleteCard(cardId) {
     return fetch(this.baseUrl + '/cards/' + cardId, {
       method: "DELETE",
       headers: this._headers,
-  })
-      .then(res => {
-          if (res.ok) {
-              return res.json();
-          } else {
-              return Promise.reject(`Error: ${res.status}`);
-          }
-      })
-      .catch((err) => console.log(err)); 
+  }).then(this._serverResCheck);
   }
 
   updateLike(cardId, cardLiked) {
     return fetch(this.baseUrl + '/cards/likes/' + cardId, {
       method: cardLiked ? "PUT" : "DELETE",
       headers: this._headers,
-  })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Error: ${res.status}`);
-        }
-    })
-    .catch((err) => console.log(err));
+  }).then(this._serverResCheck);
   }
 
   editUserInfo({ name: newName, about: newJob }) {
@@ -96,15 +63,7 @@ class Api {
       body: JSON.stringify({ 
         name: newName, 
         about: newJob })
-  })
-      .then(res => {
-          if (res.ok) {
-              return res.json();
-          } else {
-              return Promise.reject(`Error: ${res.status}`);
-          }
-      })
-      .catch((err) => console.log(err));
+  }).then(this._serverResCheck);
   }
 
   setUserAvatar({ avatar }) {
@@ -112,20 +71,13 @@ class Api {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({ avatar })
-    })
-      .then(res => {
-          if (res.ok) {
-              return res.json();
-          } else {
-              return Promise.reject(`Error: ${res.status}`);
-          }
-      })
-      .catch((err) => console.log(err));
+    }).then(this._serverResCheck);
   }
 }
 
 const api = new Api({
-  baseUrl: "https://api.jaymew88.students.nomoreparties.site",
+  baseUrl: "http://api.jaymew88.students.nomoreparties.site",
+  //baseUrl: "http://localhost:3000",
 });
 
 export default api;

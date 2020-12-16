@@ -35,58 +35,32 @@ function App() {
   // Login and Register
   const history = useHistory();
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [userEmail, setUserEmail] = useState(null);
   const [isInfoToolTipOpen, setIsToolTipOpen] = useState(false);
   const [authSuccess, setAuthSuccess] = useState(false);
 
-  // Checks for local Storage token
-  // React.useEffect(() => {
-  //   if (localStorage.getItem('token'));
-  //     setToken(localStorage.getItem('token'));
-  // }, [token]);
- 
-  // API request to verify jwt
-  // React.useEffect(() => {
-  //   if (localStorage)
-  // });
-
   React.useEffect(() => {
-    api.getUserInfo().then((userProfile) => {
-        setCurrentUser(userProfile);
-    }).catch((err) => console.log(err));
+    if (localStorage.getItem('token')) {
+      const token = localStorage.getItem('token');
+      api.setToken(token);
+      setLoggedIn(true);
 
-    api.getInitialCards().then((cards) => {
-      cards.forEach((card) => {
-        setCards([...cards, card]);
-      });
-    }).catch((err) => console.log(err));
-
-    if (localStorage.getItem("jwt")) {
-      tokenCheck();
+      api.getUserInfo().then(() => {
+        setCurrentUser();
+      }).catch((err) =>(err));
+    
+      api.getInitialCards().then((cards) => {
+        cards.forEach((card) => {
+          setCards([...cards, card]);
+        });
+      }).catch((err) => console.log(err));
     }
-    Promise.all([]);
-  }, []);
-
-  React.useEffect(tokenCheck, []);
-
-  function tokenCheck() {
-    const token = localStorage.getItem("token");
-    if (token) {
-      auth.checkUserValidity(token)
-        .then((res) => {
-          if (res && res.data) {
-            setLoggedIn(true);
-            setUserEmail(res.data.email);
-            history.push("/");
-          }
-        }).catch((err) => console.log(err));
-    } 
-  }
-
+  }, [currentUser, loggedIn] )
+    
   function handleSignup({ email, password }) {
     auth.registerUser(email, password)
       .then((res) => {
-        if (res && res.data) {
+        if (res) {
           setIsToolTipOpen(true);
           setAuthSuccess(true);
           setLoggedIn(true);
@@ -102,12 +76,10 @@ function App() {
   function handleSignin({ email, password }) {
     auth.loginUser(email, password)
       .then((data) => {
-        if (data && data.token) {
+        if (data) {
           setLoggedIn(true);
-          localStorage.setItem("token", data.token);
           history.push("/");
-          tokenCheck();
-        }
+        } 
       }).catch(() => {
         setIsToolTipOpen(true);
         setAuthSuccess(false);
@@ -140,15 +112,15 @@ function App() {
   }
 
   function handleUpdateUser({ name, about}) {
-    api.editUserInfo({ name: name, about: about }).then((userProfile) =>{
-      setCurrentUser(userProfile);
+    api.editUserInfo({ name: name, about: about }).then(() =>{
+      setCurrentUser();
       setIsEditProfilePopupOpen(false);
     }).catch((err) => console.log(err));
   }
 
   function handleUpdateAvatar(avatar) {
-    api.setUserAvatar(avatar).then((userProfile) => {
-        setCurrentUser(userProfile);
+    api.setUserAvatar(avatar).then(() => {
+        setCurrentUser();
         setIsEditAvatarPopupOpen(false);
     }).catch((err) => console.log(err));
   }
