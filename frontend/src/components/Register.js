@@ -46,7 +46,7 @@ function Register(props) {
             <input 
               className="form__input form__input_type_password form__input_theme_dark"
               id="reg-password-input"
-              type="passowrd"
+              type="password"
               name="password"
               title="Password"
               ref={passwordRef}

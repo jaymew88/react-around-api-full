@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
+const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 const cards = require('./routes/cards');
 const users = require('./routes/users');
@@ -11,23 +13,26 @@ const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
 
+const app = express();
+
 mongoose.connect('mongodb://localhost:27017/aroundb', {
   useNewUrlParser: true,
   useCreateIndex: true,
-  useFindAndModify: false
+  useFindAndModify: false,
+  useUnifiedTopology: true,
 });
 
-const app = express();
-
+app.use(cors());
 app.use(requestLogger);
+
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Server will crash now');
   }, 0);
 });
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -37,16 +42,16 @@ app.post('/signin', celebrate({
 }), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    // name: Joi.string().required().min(2).max(40),
-    // about: Joi.string().min(2),
-    // avatar: Joi.string().uri(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(40),
+    avatar: Joi.string().uri(),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
 }), createUser);
 
 app.use(auth);
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/cards', cards);
 app.use('/users', users);
 

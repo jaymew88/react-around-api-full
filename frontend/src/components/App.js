@@ -40,32 +40,50 @@ function App() {
   const [authSuccess, setAuthSuccess] = useState(false);
 
   React.useEffect(() => {
-    if (localStorage.getItem('token')) {
-      const token = localStorage.getItem('token');
-      api.setToken(token);
-      setLoggedIn(true);
+    console.log("useEffect");
+    api.getUserInfo().then((userProfile) => {
+        setCurrentUser(userProfile);
+    }).catch((err) => console.log(err));
 
-      api.getUserInfo().then(() => {
-        setCurrentUser();
-      }).catch((err) =>(err));
-    
-      api.getInitialCards().then((cards) => {
-        cards.forEach((card) => {
-          setCards([...cards, card]);
-        });
-      }).catch((err) => console.log(err));
+    api.getInitialCards().then((cards) => {
+      cards.forEach((card) => {
+        setCards([...cards, card]);
+      });
+    }).catch((err) => console.log(err));
+
+    if (localStorage.getItem("jwt")) {
+      tokenCheck();
     }
-  }, [currentUser, loggedIn] )
-    
+    Promise.all([]);
+  }, []);
+
+  React.useEffect(tokenCheck, []);
+
+  function tokenCheck() {
+    console.log('tokenCheck');
+    const token = localStorage.getItem("token");
+    if (token) {
+      auth.checkUserValidity(token)
+        .then((res) => {
+          if (res && res.data) {
+            setLoggedIn(true);
+            setUserEmail(res.data.email);
+            history.push("/");
+          }
+        }).catch((err) => console.log(err));
+    }
+  } 
+
   function handleSignup({ email, password }) {
+    console.log("signup");
     auth.registerUser(email, password)
       .then((res) => {
-        if (res) {
+        if (res && res.data) {
           setIsToolTipOpen(true);
           setAuthSuccess(true);
           setLoggedIn(true);
           setUserEmail(res.data.email);
-          history.push("/");
+          history.push("/signin");
         }
       }).catch(() => {
         setIsToolTipOpen(true);
@@ -76,15 +94,64 @@ function App() {
   function handleSignin({ email, password }) {
     auth.loginUser(email, password)
       .then((data) => {
-        if (data) {
+        if (data.token) {
           setLoggedIn(true);
+          localStorage.setItem("token", data.token);
           history.push("/");
-        } 
+          tokenCheck();
+        }
       }).catch(() => {
         setIsToolTipOpen(true);
         setAuthSuccess(false);
       }); 
   }
+
+  // React.useEffect(() => {
+  //   if (localStorage.getItem('token')) {
+  //     const token = localStorage.getItem('token');
+  //     api.setToken(token);
+  //     setLoggedIn(true);
+
+  //     api.getUserInfo().then(() => {
+  //       setCurrentUser();
+  //     }).catch((err) =>(err));
+    
+  //     api.getInitialCards().then((cards) => {
+  //       cards.forEach((card) => {
+  //         setCards([...cards, card]);
+  //       });
+  //     }).catch((err) => console.log(err));
+  //   }
+  // }, [currentUser, loggedIn] )
+    
+  // function handleSignup({ email, password }) {
+  //   auth.registerUser(email, password)
+  //     .then((res) => {
+  //       if (res && res.data) {
+  //         setIsToolTipOpen(true);
+  //         setAuthSuccess(true);
+  //         setLoggedIn(true);
+  //         setUserEmail(res.data.email);
+  //         history.push("/");
+  //       }
+  //     }).catch(() => {
+  //       setIsToolTipOpen(true);
+  //       setAuthSuccess(false);
+  //     }); 
+  // }
+
+  // function handleSignin({ email, password }) {
+  //   auth.loginUser(email, password)
+  //     .then((data) => {
+  //       if (data) {
+  //         setLoggedIn(true);
+  //         history.push("/");
+  //       } 
+  //     }).catch(() => {
+  //       setIsToolTipOpen(true);
+  //       setAuthSuccess(false);
+  //     }); 
+  // }
 
   function handleLogout() {
     setLoggedIn(false);

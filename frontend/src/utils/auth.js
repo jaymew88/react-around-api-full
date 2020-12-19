@@ -1,7 +1,7 @@
 class Auth {
   constructor({ baseUrl, headers }) {
-    this.baseUrl = baseUrl;
-    this.headers = headers;
+    this._baseUrl = baseUrl;
+    this._headers = headers;
   }
 
   _serverResCheck(res){
@@ -12,23 +12,20 @@ class Auth {
   }
 
   registerUser(email, password) {
-    return fetch(`${this.baseUrl}/signup`, {
+    return fetch(`${this._baseUrl}/signup`, {
       method: "POST",
-      headers: this.headers,
+      headers: this._headers,
       body: JSON.stringify({
         email: email,
-        password: password,
-        // name: "Name",
-        // about: "About",
-        // avatar: "https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg"
+        password: password
       }),
     }).then(this._serverResCheck);
   }
 
   loginUser(email, password) {
-    return fetch(`${this.baseUrl}/signin`, {
+    return fetch(`${this._baseUrl}/signin`, {
       method: "POST",
-      headers: this.headers,
+      headers: this._headers,
       body: JSON.stringify({
         email: email,
         password: password
@@ -40,19 +37,20 @@ class Auth {
   }
 
   checkUserValidity(token) {
-    return fetch(`${this.baseUrl}/users/me`, {
+    return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
       headers: {
-        ...this.headers,
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        ...this._headers,
+        Authorization: `Bearer ${token}`
       },
     }).then(this._serverResCheck);
   }
 }
 
 const auth = new Auth({
-  baseUrl: "http://api.jaymew88.students.nomoreparties.site",
+  //baseUrl: "http://api.jaymew88.students.nomoreparties.site",
   //baseUrl: "https://register.nomoreparties.co",
+  baseUrl: "http://localhost:3000",
   headers: {
     "Content-Type": "application/json",
   },

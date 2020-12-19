@@ -1,10 +1,12 @@
-const { NODE_ENV, JWT_SECRET } = process.env;
-const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
+const User = require('../models/user');
 const BadRequestErr = require('../errors/badrequest-err');
 const UnauthorizationErr = require('../errors/unauth-err');
 const NotFoundErr = require('../errors/not-found-err');
+
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -37,7 +39,7 @@ const getUserById = (req, res, next) => {
 };
 
 const getMe = (req, res, next) => {
-  User.findById(eq.user._id)
+  User.findById(req.user._id)
     .then((user) => {
       if (user) {
         res.send({ data: user });
@@ -57,29 +59,26 @@ const getMe = (req, res, next) => {
 const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
 
-  bcrypt.hash(req.body.password, 10).then((hash) => {
-  User.create({ name, about, avatar, email, password:hash })
-    .then((user) => res.send({ data: user }))
-    .catch(next)
-  })
-  .then((user) => {
-    const token =jwt.sign(
-      { _id: user._id},
-      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-      { expiresIn: '7d' }
-      );
-    return res.send({ data: user, token });
-  }).catch((err) => {
-    if (err.name === 'ValidationError') {
-      throw new BadRequestErr({ message: 'User validation failed' })
-    }
+  //console.log(user, password, user.password);
+
+  bcrypt.hash(password, 10).then(hash => {
+    return User.create({ name: name, about: about, avatar: avatar, email: email, password: hash })
+      .then((user) => {
+        const token =jwt.sign(
+          { _id: user._id},
+          NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+          { expiresIn: '7d' }
+       );
+      res.cookie('token', token, { httpOnly: true });
+      res.send({ data: user, token });
+    })
   })
   .catch(next);
-};
+}
 
 const updateUser = (req, res, next) => {
   const { name, about } = req.body;
-
+console.log(name, about);
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
@@ -106,23 +105,21 @@ const updateAvatar = (req, res, next) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findUserByCredentials({ email, password })
-    .then((user) => {
-      if (!user) {
-        throw new UnauthorizationErr({ message: 'Incorrect password or email' });
-      }
-      return user;
-    })
+   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
-        { _id: user.id },
+        { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' }
         );
+        res.cookie('token', token, { httpOnly: true });
         res.send({ token });
-      })
-      .catch(next);
-    }
+    })
+    .catch((err) => {
+      throw new UnauthorizationErr(err.message);
+    })
+    .catch(next);
+};
 
 module.exports = {
   getUsers,
