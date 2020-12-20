@@ -20,7 +20,7 @@ const usersSchema = new mongoose.Schema({
     default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
     validate: {
       validator(v) {
-        return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/.test(v);
+        return validator.isURL(v);
       },
     },
   },

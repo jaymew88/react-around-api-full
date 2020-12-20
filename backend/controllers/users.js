@@ -23,6 +23,7 @@ const getUserById = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if(user) {
+        console.log(user);
         res.send({ data: user });
       } else {
         throw new NotFoundErr({ message: 'User ID not found'});
@@ -38,7 +39,7 @@ const getUserById = (req, res, next) => {
     .catch(next);
 };
 
-const getMe = (req, res, next) => {
+const userInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user) {
@@ -58,8 +59,6 @@ const getMe = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
-
-  //console.log(user, password, user.password);
 
   bcrypt.hash(password, 10).then(hash => {
     return User.create({ name: name, about: about, avatar: avatar, email: email, password: hash })
@@ -116,7 +115,7 @@ const login = (req, res, next) => {
         res.send({ token });
     })
     .catch((err) => {
-      throw new UnauthorizationErr(err.message);
+      throw new UnauthorizationErr('Invalid email or password');
     })
     .catch(next);
 };
@@ -128,5 +127,5 @@ module.exports = {
   updateUser,
   updateAvatar,
   login,
-  getMe
+  userInfo
 };

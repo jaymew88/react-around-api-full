@@ -1,7 +1,9 @@
 class Api {
   constructor({ baseUrl, headers }) {
     this._headers = headers; 
-    this.baseUrl = baseUrl;
+    this._baseUrl = baseUrl;
+    console.log(headers);
+    console.log(this._baseUrl);
   }
 
   _serverResCheck(res){
@@ -11,7 +13,7 @@ class Api {
     return Promise.reject(`Error: ${res.status}`);
   }
 
-  setToken(token) {
+  setHeaders(token) {
     this._headers = {
       "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json"
@@ -20,19 +22,19 @@ class Api {
   } 
 
   getInitialCards() {
-    return fetch(this.baseUrl + '/cards', {
+    return fetch(this._baseUrl + '/cards', {
       headers: this._headers,
     }).then(this._serverResCheck);
   }
 
   getUserInfo() {
-    return fetch(this.baseUrl + '/users/me', {
+    return fetch(this._baseUrl + '/users/me', {
       headers: this._headers,
     }).then(this._serverResCheck);    
   }
 
   newCard({ name, link }) {
-    return fetch(this.baseUrl + '/cards', {
+    return fetch(this._baseUrl + '/cards', {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({
@@ -43,21 +45,21 @@ class Api {
   }
 
   deleteCard(cardId) {
-    return fetch(this.baseUrl + '/cards/' + cardId, {
+    return fetch(this._baseUrl + '/cards/' + cardId, {
       method: "DELETE",
       headers: this._headers,
   }).then(this._serverResCheck);
   }
 
   updateLike(cardId, cardLiked) {
-    return fetch(this.baseUrl + '/cards/likes/' + cardId, {
+    return fetch(this._baseUrl + '/cards/likes/' + cardId, {
       method: cardLiked ? "PUT" : "DELETE",
       headers: this._headers,
   }).then(this._serverResCheck);
   }
 
   editUserInfo({ name: newName, about: newJob }) {
-    return fetch(this.baseUrl + '/users/me', {
+    return fetch(this.b_aseUrl + '/users/me', {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({ 
@@ -67,7 +69,7 @@ class Api {
   }
 
   setUserAvatar({ avatar }) {
-    return fetch(this.baseUrl + '/users/me/avatar', {
+    return fetch(this._baseUrl + '/users/me/avatar', {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({ avatar })
@@ -77,7 +79,7 @@ class Api {
 
 const api = new Api({
   //baseUrl: "http://api.jaymew88.students.nomoreparties.site",
-  baseUrl: "http://localhost:3001",
+ baseUrl: "http://localhost:3000",
 });
 
 export default api;

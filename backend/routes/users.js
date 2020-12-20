@@ -6,12 +6,12 @@ const {
   getUserById,
   updateUser,
   updateAvatar,
-  getMe
+  userInfo
 } = require('../controllers/users');
 
 routes.get('/', getUsers);
 routes.get('/:id', getUserById);
-routes.get('/me', getMe);
+routes.get('/me', userInfo);
 
 routes.patch('/me', bodyParser.json(), celebrate({
   body: Joi.object().keys({

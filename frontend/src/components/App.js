@@ -38,9 +38,8 @@ function App() {
   const [userEmail, setUserEmail] = useState(null);
   const [isInfoToolTipOpen, setIsToolTipOpen] = useState(false);
   const [authSuccess, setAuthSuccess] = useState(false);
-
+ 
   React.useEffect(() => {
-    console.log("useEffect");
     api.getUserInfo().then((userProfile) => {
         setCurrentUser(userProfile);
     }).catch((err) => console.log(err));
@@ -56,11 +55,10 @@ function App() {
     }
     Promise.all([]);
   }, []);
-
+ 
   React.useEffect(tokenCheck, []);
 
   function tokenCheck() {
-    console.log('tokenCheck');
     const token = localStorage.getItem("token");
     if (token) {
       auth.checkUserValidity(token)
@@ -75,7 +73,6 @@ function App() {
   } 
 
   function handleSignup({ email, password }) {
-    console.log("signup");
     auth.registerUser(email, password)
       .then((res) => {
         if (res && res.data) {
@@ -83,7 +80,7 @@ function App() {
           setAuthSuccess(true);
           setLoggedIn(true);
           setUserEmail(res.data.email);
-          history.push("/signin");
+          history.push("/");
         }
       }).catch(() => {
         setIsToolTipOpen(true);
@@ -105,53 +102,6 @@ function App() {
         setAuthSuccess(false);
       }); 
   }
-
-  // React.useEffect(() => {
-  //   if (localStorage.getItem('token')) {
-  //     const token = localStorage.getItem('token');
-  //     api.setToken(token);
-  //     setLoggedIn(true);
-
-  //     api.getUserInfo().then(() => {
-  //       setCurrentUser();
-  //     }).catch((err) =>(err));
-    
-  //     api.getInitialCards().then((cards) => {
-  //       cards.forEach((card) => {
-  //         setCards([...cards, card]);
-  //       });
-  //     }).catch((err) => console.log(err));
-  //   }
-  // }, [currentUser, loggedIn] )
-    
-  // function handleSignup({ email, password }) {
-  //   auth.registerUser(email, password)
-  //     .then((res) => {
-  //       if (res && res.data) {
-  //         setIsToolTipOpen(true);
-  //         setAuthSuccess(true);
-  //         setLoggedIn(true);
-  //         setUserEmail(res.data.email);
-  //         history.push("/");
-  //       }
-  //     }).catch(() => {
-  //       setIsToolTipOpen(true);
-  //       setAuthSuccess(false);
-  //     }); 
-  // }
-
-  // function handleSignin({ email, password }) {
-  //   auth.loginUser(email, password)
-  //     .then((data) => {
-  //       if (data) {
-  //         setLoggedIn(true);
-  //         history.push("/");
-  //       } 
-  //     }).catch(() => {
-  //       setIsToolTipOpen(true);
-  //       setAuthSuccess(false);
-  //     }); 
-  // }
 
   function handleLogout() {
     setLoggedIn(false);
@@ -179,15 +129,15 @@ function App() {
   }
 
   function handleUpdateUser({ name, about}) {
-    api.editUserInfo({ name: name, about: about }).then(() =>{
-      setCurrentUser();
+    api.editUserInfo({ name: name, about: about }).then((userProfile) =>{
+      setCurrentUser(userProfile);
       setIsEditProfilePopupOpen(false);
     }).catch((err) => console.log(err));
   }
 
   function handleUpdateAvatar(avatar) {
-    api.setUserAvatar(avatar).then(() => {
-        setCurrentUser();
+    api.setUserAvatar(avatar).then((userProfile) => {
+        setCurrentUser(userProfile);
         setIsEditAvatarPopupOpen(false);
     }).catch((err) => console.log(err));
   }

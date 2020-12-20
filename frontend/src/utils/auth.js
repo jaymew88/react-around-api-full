@@ -17,7 +17,7 @@ class Auth {
       headers: this._headers,
       body: JSON.stringify({
         email: email,
-        password: password
+        password: password,
       }),
     }).then(this._serverResCheck);
   }
@@ -31,17 +31,16 @@ class Auth {
         password: password
       }),
     }).then((data) =>{
-      localStorage.setItem('jwt', data.token)
+      localStorage.setItem('token', data.token)
       return data.user;
     }).then(this._serverResCheck);
   }
-
+  
   checkUserValidity(token) {
     return fetch(`${this._baseUrl}/users/me`, {
-      method: 'GET',
       headers: {
         ...this._headers,
-        Authorization: `Bearer ${token}`
+        authorization: `Bearer ${token}`
       },
     }).then(this._serverResCheck);
   }
@@ -53,6 +52,7 @@ const auth = new Auth({
   baseUrl: "http://localhost:3000",
   headers: {
     "Content-Type": "application/json",
+    "Accept": "application/json"
   },
 });
 
