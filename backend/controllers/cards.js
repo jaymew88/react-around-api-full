@@ -4,25 +4,24 @@ const NotFoundErr = require('../errors/not-found-err');
 const BadRequestErr = require('../errors/badrequest-err');
 
 const getCards = (req, res, next) => {
-  Card.find()
+  Card.find({})
     .populate('owner')
     .populate('likes')
-    .then((cards) => res.send(cards))
+    .then((cards) => res.send({ data: cards }))
     .catch(next);
 };
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
-
-  Card.create({ name, link, owner: req.user._id })
-  .then((card) => res.send({ data: card }))
-  .catch((err) => {
-    if (err.name === 'ValidationError') {
-      throw new BadRequestErr({ message: 'Card validation failed' })
-    } else {
-      throw err;
-    }
-  }).catch(next);
+  const owner = req.user._id;
+  Card.create({ name, link, owner })
+    .then((card) => {
+      if (!card) {
+        throw new BadRequestErr('Card validation failed');
+      }
+      res.send(card);
+    })
+    .catch(next);
 };
 
 const deleteCard = (req, res, next) => {
@@ -31,14 +30,12 @@ const deleteCard = (req, res, next) => {
       if (card) {
         res.send({ data: card });
       } else {
-        throw new NotFoundErr({ message: 'Card does not belong to user' });
+        throw new NotFoundErr('Card does not belong to user');
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestErr({ message: 'Invalid card id' });
-      } else {
-        throw err;
+        throw new BadRequestErr('Invalid card id');
       }
     }).catch(next);
 }
@@ -54,14 +51,12 @@ const likeCard = (req, res, next) => {
       if (card) {
         res.send({ data: card });
       } else {
-        throw new NotFoundErr({ message: 'Card not found' });
+        throw new NotFoundErr('Card not found');
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestErr({ message: 'Invalid card id' });
-      } else {
-        throw err;
+        throw new BadRequestErr('Invalid card id');
       }
     }).catch(next);
 };
@@ -77,14 +72,12 @@ const dislikeCard = (req, res, next) => {
     if (card) {
       res.send({ data: card });
     } else {
-      throw new NotFoundErr({ message: 'Card not found' });
+      throw new NotFoundErr('Card not found');
     }
   })
   .catch((err) => {
     if (err.name === 'CastError') {
-      throw new BadRequestErr({ message: 'Invalid card id' });
-    } else {
-      throw err;
+      throw new BadRequestErr('Invalid card id');
     }
   }).catch(next);
 };

@@ -61,7 +61,7 @@ const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
 
   bcrypt.hash(password, 10).then(hash => {
-    return User.create({ name: name, about: about, avatar: avatar, email: email, password: hash })
+    return User.create({ name, about, avatar, email, password: hash })
       .then((user) => {
         const token =jwt.sign(
           { _id: user._id},
@@ -77,7 +77,7 @@ const createUser = (req, res, next) => {
 
 const updateUser = (req, res, next) => {
   const { name, about } = req.body;
-console.log(name, about);
+
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => {

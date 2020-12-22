@@ -19,9 +19,7 @@ const usersSchema = new mongoose.Schema({
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
     validate: {
-      validator(v) {
-        return validator.isURL(v);
-      },
+      validator: (v) => /(https?:\/\/(www)?)+.+/g.test(v),
     },
   },
   email: {
@@ -29,9 +27,8 @@ const usersSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator(v) {
-        return validator.isEmail(v);
-      },
+      validator: (v) => validator.isEmail(v),
+      message: "Wrong email format",
     },
   },
   password: {

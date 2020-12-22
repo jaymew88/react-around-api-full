@@ -31,8 +31,8 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -50,10 +50,9 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use(auth);
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/cards', cards);
-app.use('/users', users);
+app.use('/cards',auth, cards);
+app.use('/users', auth, users);
 
 app.get('*',(req,res)=>{
   return res.status(404).send({ "message": "Requested resource not found" });

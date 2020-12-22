@@ -1,6 +1,6 @@
 const routes = require('express').Router();
-const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
+const bodyParser = require('body-parser');
 
 const {
   getCards,
