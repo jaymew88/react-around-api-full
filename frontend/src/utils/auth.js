@@ -47,12 +47,11 @@ class Auth {
 }
 
 const auth = new Auth({
-  //baseUrl: "http://api.jaymew88.students.nomoreparties.site",
+  baseUrl: "http://api.jaymew88.students.nomoreparties.site",
   //baseUrl: "https://register.nomoreparties.co",
-  baseUrl: "http://localhost:3000",
+  //baseUrl: "http://localhost:3000",
   headers: {
-    "Content-Type": "application/json",
-    "Accept": "application/json"
+    "Content-Type": "application/json"
   },
 });
 

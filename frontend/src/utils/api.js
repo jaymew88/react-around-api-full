@@ -1,9 +1,7 @@
 class Api {
   constructor({ baseUrl, headers }) {
-    this._headers = headers; 
-    this._baseUrl = baseUrl;
-    console.log(headers);
-    console.log(this._baseUrl);
+    this.headers = headers; 
+    this.baseUrl = baseUrl;
   }
 
   _serverResCheck(res){
@@ -14,29 +12,29 @@ class Api {
   }
 
   setHeaders(token) {
-    this._headers = {
-      "Authorization": `Bearer ${token}`,
+    this.headers = {
+      authorization: `Bearer ${token}`,
       "Content-Type": "application/json"
     }
     return
   } 
 
   getInitialCards() {
-    return fetch(this._baseUrl + '/cards', {
-      headers: this._headers,
+    return fetch(this.baseUrl + '/cards', {
+      headers: this.headers,
     }).then(this._serverResCheck);
   }
 
   getUserInfo() {
-    return fetch(this._baseUrl + '/users/me', {
-      headers: this._headers,
+    return fetch(this.baseUrl + '/users/me', {
+      headers: this.headers,
     }).then(this._serverResCheck);    
   }
 
   newCard({ name, link }) {
-    return fetch(this._baseUrl + '/cards', {
+    return fetch(this.baseUrl + '/cards', {
       method: "POST",
-      headers: this._headers,
+      headers: this.headers,
       body: JSON.stringify({
         name, 
         link
@@ -45,23 +43,23 @@ class Api {
   }
 
   deleteCard(cardId) {
-    return fetch(this._baseUrl + '/cards/' + cardId, {
+    return fetch(this.baseUrl + '/cards/' + cardId, {
       method: "DELETE",
-      headers: this._headers,
+      headers: this.headers,
   }).then(this._serverResCheck);
   }
 
   updateLike(cardId, cardLiked) {
-    return fetch(this._baseUrl + '/cards/likes/' + cardId, {
+    return fetch(this.baseUrl + '/cards/likes/' + cardId, {
       method: cardLiked ? "PUT" : "DELETE",
-      headers: this._headers,
+      headers: this.headers,
   }).then(this._serverResCheck);
   }
 
   editUserInfo({ name: newName, about: newJob }) {
-    return fetch(this.b_aseUrl + '/users/me', {
+    return fetch(this.baseUrl + '/users/me', {
       method: "PATCH",
-      headers: this._headers,
+      headers: this.headers,
       body: JSON.stringify({ 
         name: newName, 
         about: newJob })
@@ -69,17 +67,17 @@ class Api {
   }
 
   setUserAvatar({ avatar }) {
-    return fetch(this._baseUrl + '/users/me/avatar', {
+    return fetch(this.baseUrl + '/users/me/avatar', {
       method: "PATCH",
-      headers: this._headers,
+      headers: this.headers,
       body: JSON.stringify({ avatar })
     }).then(this._serverResCheck);
   }
 }
 
 const api = new Api({
-  //baseUrl: "http://api.jaymew88.students.nomoreparties.site",
- baseUrl: "http://localhost:3000",
+  baseUrl: "http://api.jaymew88.students.nomoreparties.site",
+ //baseUrl: "http://localhost:3000",
 });
 
 export default api;

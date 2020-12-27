@@ -50,7 +50,7 @@ function App() {
       });
     }).catch((err) => console.log(err));
 
-    if (localStorage.getItem("jwt")) {
+    if (localStorage.getItem("token")) {
       tokenCheck();
     }
     Promise.all([]);
