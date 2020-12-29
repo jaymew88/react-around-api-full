@@ -34,14 +34,6 @@ class Auth {
         password: password
       }),
     }).then(this._serverResCheck);
-    // .then((data) => {
-    //   if (data.token) {
-    //     localStorage.setItem('token', data.token);
-    //     return data;
-    //   } else {
-    //     return
-    //   }
-   // })
   }
 
   checkUserValidity(token) {
@@ -52,8 +44,6 @@ class Auth {
         Authorization: `Bearer ${token}`
       },
     }).then(this._serverResCheck);
-    // .then((data) => data)
-    // .catch((err) => console.log(err));
   }
 }
 

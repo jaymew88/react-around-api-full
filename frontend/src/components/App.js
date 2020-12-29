@@ -52,7 +52,6 @@ function App() {
   }, [history, token]);
 
   React.useEffect(() =>{ 
-    console.log("logged in", loggedIn);
     if (token) {
       api.getUserInfo(token)
       .then((res) => {
