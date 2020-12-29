@@ -1,0 +1,16 @@
+.profile__info {
+  margin: 10px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  width: 280px;
+}
+
+@media (min-width: 1024px) {
+  .profile__info {
+    width: 430px;
+    margin: 0 0 0 40px;
+    justify-content: flex-start;
+  }
+}

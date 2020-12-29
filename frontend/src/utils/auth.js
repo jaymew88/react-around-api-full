@@ -18,6 +18,9 @@ class Auth {
       body: JSON.stringify({
         email: email,
         password: password,
+        name: 'Jacques',
+        about: 'Explorer',
+        avatar: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg'
       }),
     }).then(this._serverResCheck);
   }
@@ -30,31 +33,28 @@ class Auth {
         email: email,
         password: password
       }),
-    }).then((data) =>{
-      localStorage.setItem('token', data.token)
-      return data.user;
-    }).then(this._serverResCheck);
+    }).then(this._serverResCheck)
   }
-  
+
   checkUserValidity(token) {
     return fetch(`${this._baseUrl}/users/me`, {
+      method: "GET",
       headers: {
         ...this._headers,
-        authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       },
     }).then(this._serverResCheck);
   }
 }
 
 const auth = new Auth({
-  baseUrl: "http://api.jaymew88.students.nomoreparties.site",
   //baseUrl: "https://register.nomoreparties.co",
-  //baseUrl: "http://localhost:3000",
+  baseUrl: "https://api.jaymew88.students.nomoreparties.site",
+  //baseUrl: "http;//localhost:3000",
   headers: {
-    "Content-Type": "application/json"
+    "Accept" : "application/json",
+    "Content-Type": "application/json",
   },
 });
 
 export default auth;
-
-

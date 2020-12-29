@@ -1,0 +1,15 @@
+@import url(../__field/_type/popup__field_type_error.css);
+
+.popup__field {
+  display: block;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 17px;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+
+
+

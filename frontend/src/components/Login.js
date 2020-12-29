@@ -49,6 +49,7 @@ function Login(props) {
               type="password"
               name="password"
               title="Password"
+              autoComplete="on"
               ref={passwordRef}
               placeholder="Password"
               required 

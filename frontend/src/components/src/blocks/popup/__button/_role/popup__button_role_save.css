@@ -1,0 +1,24 @@
+.popup__button_role_save {
+  background: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  width: 100%;
+  color: #ffffff;
+  font-weight: normal;
+  font-size: 14px;
+  display: block;
+  padding: 11px 0;
+  text-align: center;
+}
+
+.popup__button_role_save:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+@media (min-width: 475px) {
+  .popup__button_role_save {
+    font-size: 18px;
+    padding: 14px 0;
+  }
+
+}

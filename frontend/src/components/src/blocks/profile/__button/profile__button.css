@@ -1,0 +1,9 @@
+@import url(../__button/_role/profile__button_role_add.css);
+@import url(../__button/_role/profile__button_role_edit.css);
+@import url(../__button/_role/profile__button_role_edit-avatar.css);
+
+.profile__button {
+  background-position: center;
+}
+
+
