@@ -14,16 +14,16 @@ class Api {
   getInitialCards(token) {
     return fetch(this.baseUrl + '/cards', {
     headers: {
-      authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json"
     }
     }).then(this._serverResCheck);
   }
 
   getUserInfo(token) {
-    return fetch(this.baseUrl + '/users/me', {
+    return fetch(this.baseUrl + '/users/me', { 
      headers: {
-      authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json"
     }
     }).then(this._serverResCheck);    
@@ -33,7 +33,7 @@ class Api {
     return fetch(this.baseUrl + '/cards', {
       method: "POST",
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -47,7 +47,7 @@ class Api {
     return fetch(this.baseUrl + '/cards/' + cardId, {
       method: "DELETE",
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
   }).then(this._serverResCheck);
@@ -57,7 +57,7 @@ class Api {
     return fetch(this.baseUrl + '/cards/likes/' + cardId, {
       method: cardLiked ? "PUT" : "DELETE",
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
   }).then(this._serverResCheck);
@@ -67,7 +67,7 @@ class Api {
     return fetch(this.baseUrl + '/users/me', {
       method: "PATCH",
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ 
@@ -80,7 +80,7 @@ class Api {
     return fetch(this.baseUrl + '/users/me/avatar', {
       method: "PATCH",
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ avatar: avatar })
@@ -90,7 +90,6 @@ class Api {
 
 const api = new Api({
   baseUrl: "https://api.jaymew88.students.nomoreparties.site",
-  //baseUrl: "http://localhost:3001",
 });
 
 export default api;

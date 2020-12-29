@@ -81,8 +81,6 @@ function App() {
         localStorage.setItem('token', res.token);
         setCurrentUser(res.data);
         history.push("/");
-        console.log("res", res);
-        console.log("res data", res.data);
       }
     }).catch(() => {
         setIsToolTipOpen(true);
@@ -92,11 +90,11 @@ function App() {
 
   function handleSignin({ email, password }) {
     auth.loginUser(email, password)
-        .then((data) => {
-        console.log(data);
-        if (data && data.token) {
+        .then((res) => {
+        if (res.data && res.token) {
+          console.log(res.data);
           setLoggedIn(true);
-          localStorage.setItem('token', data.token);
+          localStorage.setItem('token', res.token);
           history.push("/");
         }
       })
@@ -105,6 +103,21 @@ function App() {
         setAuthSuccess(false);
       }); 
   }
+
+  // function handleSignin({ email, password }) {
+  //   auth.loginUser(email, password)
+  //       .then((data) => {
+  //       if (data && data.token) {
+  //         setLoggedIn(true);
+  //         localStorage.setItem('token', data.token);
+  //         history.push("/");
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setIsToolTipOpen(true);
+  //       setAuthSuccess(false);
+  //     }); 
+  // }
 
   function handleLogout() {
     setLoggedIn(false);

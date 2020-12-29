@@ -49,9 +49,8 @@ class Auth {
 
 const auth = new Auth({
   baseUrl: "https://api.jaymew88.students.nomoreparties.site",
-  //baseUrl: "http://localhost:3001",
   headers: {
-    "Accept" : "application/json",
+    Accept : "application/json",
     "Content-Type": "application/json",
   },
 });
