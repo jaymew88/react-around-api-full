@@ -89,8 +89,8 @@ class Api {
 }
 
 const api = new Api({
-  //baseUrl: "https://api.jaymew88.students.nomoreparties.site",
-  baseUrl: "http://localhost:3001",
+  baseUrl: "https://api.jaymew88.students.nomoreparties.site",
+  //baseUrl: "http://localhost:3001",
 });
 
 export default api;

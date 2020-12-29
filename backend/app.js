@@ -22,7 +22,12 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
   useUnifiedTopology: true,
 });
 
-app.use(cors());
+const corsOptions = {
+  origin: /https:\/\/(www\.)?jaymew88\.students\.nomoreparties\.site\S*/,
+  allowedHeaders: ['Content-type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 app.use(requestLogger);
 
 app.get('/crash-test', () => {
