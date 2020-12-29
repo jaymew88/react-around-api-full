@@ -22,25 +22,9 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
   useUnifiedTopology: true,
 });
 
-const allowedCors = [
-  'https://jaymew88.students.nomoreparties.site',
-  'http://www.jaymew88.students.nomoreparties.site',
-];
-
-app.use(express.json(), cors());
-app.use(requestLogger);
-
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-
-  next();
-});
-
+app.use(cors());
 app.options('*', cors());
+app.use(requestLogger);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
