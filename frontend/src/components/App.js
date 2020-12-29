@@ -39,40 +39,7 @@ function App() {
   const [isInfoToolTipOpen, setIsToolTipOpen] = useState(false);
   const [authSuccess, setAuthSuccess] = useState(false);
   const [token, setToken] = useState(localStorage.getItem('token'));
- 
-  // React.useEffect(() => {
-  //   api.getUserInfo().then((userProfile) => {
-  //       setCurrentUser(userProfile);
-  //   }).catch((err) => console.log(err));
-
-  //   api.getInitialCards().then((cards) => {
-  //     cards.forEach((card) => {
-  //       setCards([...cards, card]);
-  //     });
-  //   }).catch((err) => console.log(err));
-
-  //   if (localStorage.getItem('token')) {
-  //     tokenCheck();
-  //   }
-  //   Promise.all([]);
-  // }, []);
-
-  // React.useEffect(tokenCheck, []);
-
-  // function tokenCheck() {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     auth.checkUserValidity(token)
-  //       .then((res) => {
-  //         if (res && res.data) {
-  //           setLoggedIn(true);
-  //           setUserEmail(res.data.email);
-  //           history.push("/");
-  //         }
-  //       }).catch((err) => console.log(err));
-  //   }
-  // }   
-
+  
   React.useEffect(() => {
     if (token) {
       auth.checkUserValidity(token)
@@ -82,9 +49,10 @@ function App() {
         history.push('/');
       }).catch((err) => console.log(err));
     }
-  }, []);
+  }, [history, token]);
 
   React.useEffect(() =>{ 
+    console.log("logged in", loggedIn);
     if (token) {
       api.getUserInfo(token)
       .then((res) => {
@@ -94,13 +62,13 @@ function App() {
       }).catch((err) => console.log(err));
 
       api.getInitialCards(token)
-      .then((cards) => {
-        cards.forEach((card) => {
-          setCards([...cards, card]);
-        })
+      .then((res) => {
+        if (res.data) {
+          setCards((cards) => res.data);
+        }
       }).catch((err) => console.log(err));
     }
-  }, [loggedIn]);
+  }, [loggedIn, token]);
 
   function handleSignup({ email, password, name, about, avatar }) {
     auth.registerUser(email, password, name, about, avatar)
@@ -114,69 +82,30 @@ function App() {
         localStorage.setItem('token', res.token);
         setCurrentUser(res.data);
         history.push("/");
+        console.log("res", res);
+        console.log("res data", res.data);
       }
     }).catch(() => {
         setIsToolTipOpen(true);
         setAuthSuccess(false);
       }); 
-  }
+  } 
 
   function handleSignin({ email, password }) {
-    auth
-      .loginUser(email, password)
-      .then((res) => {
-        if (res.token) {
-          setUserEmail(res.data.email);
-          setCurrentUser(res.data);
-          setToken(res.token);
-          localStorage.setItem("token", res.token);
+    auth.loginUser(email, password)
+        .then((data) => {
+        console.log(data);
+        if (data && data.token) {
           setLoggedIn(true);
-          history.push("/around");
+          localStorage.setItem('token', data.token);
+          history.push("/");
         }
       })
-      .catch((err) => {
+      .catch(() => {
         setIsToolTipOpen(true);
         setAuthSuccess(false);
-      });
+      }); 
   }
-  // function handleSignup({ email, password }) {
-  //   auth.registerUser(email, password)
-  //     .then((res) => {
-  //       if (res && res.data) {
-  //         setIsToolTipOpen(true);
-  //         setAuthSuccess(true);
-  //         setLoggedIn(true);
-  //         setUserEmail(res.data.email);
-  //        // setToken(res.token);
-  //        // localStorage.setItem('token', res.token);
-  //         setCurrentUser({
-  //           name: res.data.name,
-  //           about: res.data.about,
-  //           avatar: res.data.avatar
-  //         });
-  //         history.push("/");
-  //       }
-  //     }).catch(() => {
-  //       setIsToolTipOpen(true);
-  //       setAuthSuccess(false);
-  //     }); 
-  // }
-
-  // function handleSignin({ email, password }) {
-  //   auth.loginUser(email, password)
-  //     .then((data) => {
-  //       if (data.token) {
-  //         setLoggedIn(true);
-  //         localStorage.setItem('token', data.token);
-  //         console.log(data.token); // WORKS!!!! Gets token
-  //         history.push("/");
-  //       //  tokenCheck();
-  //       }
-  //     }).catch(() => {
-  //       setIsToolTipOpen(true);
-  //       setAuthSuccess(false);
-  //     }); 
-  // }
 
   function handleLogout() {
     setLoggedIn(false);

@@ -33,7 +33,15 @@ class Auth {
         email: email,
         password: password
       }),
-    }).then(this._serverResCheck)
+    }).then(this._serverResCheck);
+    // .then((data) => {
+    //   if (data.token) {
+    //     localStorage.setItem('token', data.token);
+    //     return data;
+    //   } else {
+    //     return
+    //   }
+   // })
   }
 
   checkUserValidity(token) {
@@ -44,13 +52,14 @@ class Auth {
         Authorization: `Bearer ${token}`
       },
     }).then(this._serverResCheck);
+    // .then((data) => data)
+    // .catch((err) => console.log(err));
   }
 }
 
 const auth = new Auth({
-  //baseUrl: "https://register.nomoreparties.co",
-  baseUrl: "https://api.jaymew88.students.nomoreparties.site",
-  //baseUrl: "http;//localhost:3000",
+  //baseUrl: "https://api.jaymew88.students.nomoreparties.site",
+  baseUrl: "http://localhost:3001",
   headers: {
     "Accept" : "application/json",
     "Content-Type": "application/json",
