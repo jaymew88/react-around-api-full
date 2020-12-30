@@ -8,7 +8,7 @@ function Register(props) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    props.onSignup({
+    props.onSignup({  // LAST ERROR onSubmit
       email: emailRef.current.value,
       password: passwordRef.current.value
     });

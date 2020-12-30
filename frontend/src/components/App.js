@@ -44,12 +44,12 @@ function App() {
     if (token) {
       auth.checkUserValidity(token)
       .then((res) => {
+        console.log(res);  // NOT printing
         setLoggedIn(true);
-        setUserEmail(res.data.email);
-        history.push('/');
+        setUserEmail(res.data.email);  // NOT SHOWING UP
       }).catch((err) => console.log(err));
-    }
-  }, [history, token]);
+     } 
+  }, [token]);  // I DO NOT THINK THIS IS RUNNING
 
   React.useEffect(() =>{ 
     if (token) {
@@ -67,7 +67,7 @@ function App() {
         }
       }).catch((err) => console.log(err));
     }
-  }, [loggedIn, token]);
+  }, [token]);
 
   function handleSignup({ email, password, name, about, avatar }) {
     auth.registerUser(email, password, name, about, avatar)
@@ -87,37 +87,23 @@ function App() {
         setAuthSuccess(false);
       }); 
   } 
-
   function handleSignin({ email, password }) {
     auth.loginUser(email, password)
-        .then((res) => {
-        if (res.data && res.token) {
-          console.log(res.data);
+        .then((data) => {
+        if (data && data.token) {
+          console.log("signin", data);  // ONLY token is printed
           setLoggedIn(true);
-          localStorage.setItem('token', res.token);
+          setToken(data.token);
+          localStorage.setItem('token', data.token);
           history.push("/");
         }
       })
-      .catch(() => {
+      .catch((err) => {
         setIsToolTipOpen(true);
         setAuthSuccess(false);
-      }); 
-  }
-
-  // function handleSignin({ email, password }) {
-  //   auth.loginUser(email, password)
-  //       .then((data) => {
-  //       if (data && data.token) {
-  //         setLoggedIn(true);
-  //         localStorage.setItem('token', data.token);
-  //         history.push("/");
-  //       }
-  //     })
-  //     .catch(() => {
-  //       setIsToolTipOpen(true);
-  //       setAuthSuccess(false);
-  //     }); 
-  // }
+        console.log(err.message);
+      });
+  } 
 
   function handleLogout() {
     setLoggedIn(false);

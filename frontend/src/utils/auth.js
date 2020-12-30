@@ -14,7 +14,10 @@ class Auth {
   registerUser(email, password) {
     return fetch(`${this._baseUrl}/signup`, {
       method: "POST",
-      headers: this._headers,
+      //headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+       },
       body: JSON.stringify({
         email: email,
         password: password,
@@ -28,7 +31,10 @@ class Auth {
   loginUser(email, password) {
     return fetch(`${this._baseUrl}/signin`, {
       method: "POST",
-      headers: this._headers,
+     // headers: this._headers,
+     headers: {
+      "Content-Type": "application/json",
+     },
       body: JSON.stringify({
         email: email,
         password: password
@@ -40,7 +46,9 @@ class Auth {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       headers: {
-        ...this._headers,
+        Accept : "application/json",
+        "Content-Type": "application/json",
+       // ...this._headers,
         Authorization: `Bearer ${token}`
       },
     }).then(this._serverResCheck);
@@ -48,11 +56,12 @@ class Auth {
 }
 
 const auth = new Auth({
-  baseUrl: "https://api.jaymew88.students.nomoreparties.site",
-  headers: {
-    Accept : "application/json",
-    "Content-Type": "application/json",
-  },
+//  baseUrl: "https://api.jaymew88.students.nomoreparties.site",
+  baseUrl: "http://localhost:3001",
+  // headers: {
+  //   Accept : "application/json",
+  //   "Content-Type": "application/json",
+  // },
 });
 
 export default auth;
