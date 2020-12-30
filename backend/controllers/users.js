@@ -26,12 +26,12 @@ const getUserById = (req, res, next) => {
         console.log(user);
         res.send({ data: user });
       } else {
-        throw new NotFoundErr({ message: 'User ID not found'});
+        throw new NotFoundErr('User ID not found');
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestErr({ message: 'Invalid user ID'})
+        throw new BadRequestErr('Invalid user ID');
       } else {
         throw err;
       }
@@ -50,7 +50,7 @@ const userInfo = (req, res, next) => {
     })
     .catch(err => {
       if (err.name === 'CastError') {
-        throw new BadRequestErr({ message: 'Invalid user ID'})
+        throw new BadRequestErr('Invalid user ID');
       } else {
         throw err;
       }
@@ -82,7 +82,7 @@ const updateUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestErr({ message: 'User validation failed' })
+        throw new BadRequestErr('User validation failed');
       }
     })
     .catch(next);
@@ -95,7 +95,7 @@ const updateAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestErr({ message: 'User validation failed' })
+        throw new BadRequestErr('User validation failed');
       }
     })
     .catch(next);
@@ -114,7 +114,7 @@ const login = (req, res, next) => {
         res.cookie('token', token, { httpOnly: true });
         res.send({ token });
     })
-    .catch((err) => {
+    .catch(() => {
       throw new UnauthorizationErr('Invalid email or password');
     })
     .catch(next);

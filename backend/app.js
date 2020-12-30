@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const path = require('path');
+// const path = require('path');
 const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 const cards = require('./routes/cards');
@@ -51,8 +51,8 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/cards',auth, cards);
+// app.use(express.static(path.join(__dirname, 'public')));
+app.use('/cards', auth, cards);
 app.use('/users', auth, users);
 
 app.get('*',(req,res)=>{

@@ -87,6 +87,24 @@ function App() {
         setAuthSuccess(false);
       }); 
   } 
+ 
+  // function handleSignin ({ email, password }) {
+  //   auth.loginUser(email, password)
+  //     .then((res) => {
+  //       if (res) {
+  //         setLoggedIn(true);
+  //         setToken(res.token);
+  //         return res;
+  //       }
+  //     })
+  //     .then((data) => {
+  //       setUserEmail(data.email);
+  //       localStorage.setItem('token', token);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }
+
+  
   function handleSignin({ email, password }) {
     auth.loginUser(email, password)
         .then((data) => {
@@ -101,7 +119,7 @@ function App() {
       .catch((err) => {
         setIsToolTipOpen(true);
         setAuthSuccess(false);
-        console.log(err.message);
+        console.log(err);
       });
   } 
 
