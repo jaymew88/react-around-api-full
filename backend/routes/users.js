@@ -1,6 +1,5 @@
 const routes = require('express').Router();
-const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, Segments } = require('celebrate');
 const {
   getUsers,
   getUserById,
@@ -9,19 +8,23 @@ const {
   userInfo
 } = require('../controllers/users');
 
-routes.get('/', getUsers);
-routes.get('/:id', getUserById);
-routes.get('/me', userInfo);
-
-routes.patch('/me', bodyParser.json(), celebrate({
+routes.get('/users', getUsers);
+routes.get('/users/me', userInfo);
+routes.get('/users/:id',
+  celebrate({
+    [Segments.PARAMS]: Joi.object({
+      id: Joi.string().required().length(24).required(),
+    }),
+  }), getUserById);
+routes.patch('/users/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
   }),
 }), updateUser);
-routes.patch('/me/avatar', bodyParser.json(), celebrate({
+routes.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().uri(),
+    avatar: Joi.string().required().pattern(new RegExp('^https?:\\/\\/(www\\.)?[\\S^~<>]+\\.[\\S^~<>]+#?')),
   }),
 }), updateAvatar);
 

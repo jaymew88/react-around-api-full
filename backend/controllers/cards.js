@@ -19,7 +19,7 @@ const createCard = (req, res, next) => {
       if (!card) {
         throw new BadRequestErr('Card validation failed');
       }
-      res.send(card);
+      res.send({ data: card });
     })
     .catch(next);
 };

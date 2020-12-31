@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-// const path = require('path');
 const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 const cards = require('./routes/cards');
@@ -13,6 +12,11 @@ const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
 
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200,
+};
+
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/aroundb', {
@@ -22,38 +26,37 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
   useUnifiedTopology: true,
 });
 
-app.use(cors());
-app.options('*', cors());
-app.use(requestLogger);
-
+// for reviewers
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Server will crash now');
   }, 0);
 });
 
+app.use(express.json(), cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(requestLogger);
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
+    email: Joi.string().required().pattern(new RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')),
     password: Joi.string().required(),
   }),
 }), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(40),
-    avatar: Joi.string().uri(),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(new RegExp('^https?:\\/\\/(www\\.)?[\\S^~<>]+\\.[\\S^~<>]+#?')),
+    email: Joi.string().required().pattern(new RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')),
+    password: Joi.string().trim().min(1).required(),
   }),
 }), createUser);
 
-// app.use(express.static(path.join(__dirname, 'public')));
-app.use('/cards', auth, cards);
-app.use('/users', auth, users);
+app.use('/', auth, cards, users);
+
 
 app.get('*',(req,res)=>{
   return res.status(404).send({ "message": "Requested resource not found" });

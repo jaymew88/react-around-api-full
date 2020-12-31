@@ -1,6 +1,5 @@
 const routes = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
-const bodyParser = require('body-parser');
+const { celebrate, Joi, Segments } = require('celebrate');
 
 const {
   getCards,
@@ -10,18 +9,33 @@ const {
   dislikeCard
 } = require('../controllers/cards');
 
-routes.get('/', getCards);
+routes.get('/cards', getCards);
 
-routes.post('/', bodyParser.json(), celebrate({
+routes.post('/cards', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(20),
-    link: Joi.string().required().uri(),
+    link: Joi.string().required().pattern(new RegExp('^https?:\\/\\/(www\\.)?[\\S^~<>]+\\.[\\S^~<>]+#?')),
   }),
 }), createCard);
-
-routes.delete('/:cardId', deleteCard);
-routes.put('/:cardId/likes', likeCard);
-routes.delete('/:cardId/likes', dislikeCard);
+routes.delete('/cards/:cardId', celebrate({
+  headers: Joi.object().keys({
+      authorization: Joi.string().required(),
+    })
+    .options({ allowUnknown: true }),
+      params: Joi.object().keys({
+      cardId: Joi.string().required().length(24).hex(),
+  }),
+}), deleteCard);
+routes.put('/cards/:cardId/likes', celebrate({
+  [Segments.PARAMS]: Joi.object({
+    cardId: Joi.string().required().length(24).hex(),
+  }),
+}), likeCard);
+routes.delete('/cards/:cardId/likes', celebrate({
+  [Segments.PARAMS]: Joi.object({
+  cardId: Joi.string().required().length(24).hex(),
+  }),
+}), dislikeCard);
 
 
 module.exports = routes;

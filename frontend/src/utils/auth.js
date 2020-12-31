@@ -1,7 +1,6 @@
 class Auth {
-  constructor({ baseUrl, headers }) {
-    this._baseUrl = baseUrl;
-    this._headers = headers;
+  constructor(options) {
+    this.baseUrl = options.baseUrl;
   }
 
   _serverResCheck(res){
@@ -12,10 +11,10 @@ class Auth {
   }
 
   registerUser(email, password) {
-    return fetch(`${this._baseUrl}/signup`, {
+    return fetch(`${this.baseUrl}/signup`, {
       method: "POST",
-      //headers: this._headers,
       headers: {
+        "Accept" : "application/json",
         "Content-Type": "application/json",
        },
       body: JSON.stringify({
@@ -25,43 +24,50 @@ class Auth {
         about: 'Explorer',
         avatar: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg'
       }),
-    }).then(this._serverResCheck);
+    }).then(this._serverResCheck)
+    .then((res) => {
+      console.log("register", res);
+      return res;
+    }); // ADDED (do I need?)
   }
 
   loginUser(email, password) {
-    return fetch(`${this._baseUrl}/signin`, {
+    return fetch(`${this.baseUrl}/signin`, {
       method: "POST",
-     // headers: this._headers,
-     headers: {
-      "Content-Type": "application/json",
+      headers: {
+        "Accept" : "application/json",
+        "Content-Type": "application/json",
      },
       body: JSON.stringify({
         email: email,
         password: password
       }),
-    }).then(this._serverResCheck);
+    }).then(this._serverResCheck)
+    .then((data) => {
+      console.log("login", data);
+      return data;
+    });  // ADDED (Do I need??)
   }
 
   checkUserValidity(token) {
-    return fetch(`${this._baseUrl}/users/me`, {
+    return fetch(`${this.baseUrl}/users/me`, {
       method: "GET",
       headers: {
-        Accept : "application/json",
+        "Accept" : "application/json",
         "Content-Type": "application/json",
-       // ...this._headers,
-        Authorization: `Bearer ${token}`
+        "Authorization": `Bearer ${token}`,
       },
-    }).then(this._serverResCheck);
+    }).then(this._serverResCheck)
+    .then((data) => {
+      console.log("validate", data);
+      return data;
+    });
   }
 }
 
 const auth = new Auth({
  baseUrl: "https://api.jaymew88.students.nomoreparties.site",
   //baseUrl: "http://localhost:3001",
-  // headers: {
-  //   Accept : "application/json",
-  //   "Content-Type": "application/json",
-  // },
 });
 
 export default auth;

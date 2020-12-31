@@ -23,7 +23,6 @@ const getUserById = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if(user) {
-        console.log(user);
         res.send({ data: user });
       } else {
         throw new NotFoundErr('User ID not found');
@@ -69,7 +68,7 @@ const createUser = (req, res, next) => {
           { expiresIn: '7d' }
        );
       res.cookie('token', token, { httpOnly: true });
-      res.send({ data: user, token });
+      res.send({ data: user,  token });
     })
   })
   .catch(next);
