@@ -38,11 +38,12 @@ const getUserById = (req, res, next) => {
     .catch(next);
 };
 
+// GETS current user info
 const userInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user) {
-        res.send(user); // changed from { data: user }
+        res.send({ data: user });
       } else {
         throw new NotFoundErr('User ID does not exist');
       }
@@ -62,23 +63,14 @@ const createUser = (req, res, next) => {
   bcrypt.hash(password, 10).then(hash => {
     return User.create({ name, about, avatar, email, password: hash })
       .then((user) => {
-        const token =jwt.sign(
+        const token = jwt.sign(
           { _id: user._id},
           NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
           { expiresIn: '7d' }
        );
-      res.cookie('token', token, { httpOnly: true });
-      res.send({
-        data: {
-          name: user.name,
-          about: user.about,
-          avatar: user.avatar,
-          email : user.email,
-          _id: user._id,
-        },
-        token
-      });
-    })
+   //   res.cookie('token', token, { httpOnly: true });
+      res.send({ data: user, token });
+    });
   })
   .catch(next);
 }
@@ -119,7 +111,7 @@ const login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' }
         );
-        res.cookie('token', token, { httpOnly: true });
+      //  res.cookie('token', token, { httpOnly: true });
         res.send({ token });
     })
     .catch(() => {

@@ -55,8 +55,8 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use('/', auth, cards, users);
-
+app.use('/', auth, cards);
+app.use('/', auth, users);
 
 app.get('*',(req,res)=>{
   return res.status(404).send({ "message": "Requested resource not found" });
