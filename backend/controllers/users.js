@@ -42,7 +42,7 @@ const userInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user) {
-        res.send({ data: user });
+        res.send(user); // changed from { data: user }
       } else {
         throw new NotFoundErr('User ID does not exist');
       }
@@ -68,7 +68,16 @@ const createUser = (req, res, next) => {
           { expiresIn: '7d' }
        );
       res.cookie('token', token, { httpOnly: true });
-      res.send({ data: user,  token });
+      res.send({
+        data: {
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email : user.email,
+          _id: user._id,
+        },
+        token
+      });
     })
   })
   .catch(next);

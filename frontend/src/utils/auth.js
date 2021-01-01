@@ -24,11 +24,7 @@ class Auth {
         about: 'Explorer',
         avatar: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg'
       }),
-    }).then(this._serverResCheck)
-    .then((res) => {
-      console.log("register", res);
-      return res;
-    }); // ADDED (do I need?)
+    }).then(this._serverResCheck);
   }
 
   loginUser(email, password) {
@@ -42,11 +38,7 @@ class Auth {
         email: email,
         password: password
       }),
-    }).then(this._serverResCheck)
-    .then((data) => {
-      console.log("login", data);
-      return data;
-    });  // ADDED (Do I need??)
+    }).then(this._serverResCheck);
   }
 
   checkUserValidity(token) {
@@ -58,10 +50,9 @@ class Auth {
         "Authorization": `Bearer ${token}`,
       },
     }).then(this._serverResCheck)
-    .then((data) => {
-      console.log("validate", data);
-      return data;
-    });
+    .then((res) => {
+      console.log("validitiy", res); // runs 3rd on reload
+    })
   }
 }
 
