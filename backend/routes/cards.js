@@ -26,12 +26,12 @@ routes.delete('/cards/:cardId', celebrate({
       cardId: Joi.string().required().length(24).hex(),
   }),
 }), deleteCard);
-routes.put('/cards/:cardId/likes', celebrate({
+routes.put('/cards/likes/:cardId', celebrate({
   [Segments.PARAMS]: Joi.object({
     cardId: Joi.string().required().length(24).hex(),
   }),
 }), likeCard);
-routes.delete('/cards/:cardId/likes', celebrate({
+routes.delete('/cards/likes/:cardId', celebrate({
   [Segments.PARAMS]: Joi.object({
   cardId: Joi.string().required().length(24).hex(),
   }),

@@ -41,39 +41,26 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
-    if (token) { 
-      console.log("1", loggedIn);  
+    if (token) {   
       auth.checkUserValidity(token) 
       .then((res) => {
-          console.log(res);    
+        if (res && res.data) {   
           setLoggedIn(true);
-          setUserEmail(res.data.email);  
+          setUserEmail(res.data.email);
+          setCurrentUser(res.data);  
           history.push('/'); 
-          console.log('log in', loggedIn);   
-      }).catch((err) => console.log(err));
-     }
-  }, [token]);  
-
-  useEffect(() => {
-    if (token) {   
-      api.getUserInfo(token)
-      .then((res) => {
-        if (res && res.data) { 
-          console.log("userInfo", res.data); 
-          setCurrentUser(res.data);
-        }
+        }  
       }).catch((err) => console.log(err));
 
       api.getInitialCards(token) 
         .then((res) => {
           if (res.data) {
-            console.log(res.data); 
             setCards(() => res.data);
           }
-        }).catch((err) => console.log(err));
-   }
+      }).catch((err) => console.log(err));
+    }
    Promise.all([]); 
-  }, [loggedIn, token]);  
+  }, [token]);   
 
   function handleSignup({ email, password, name, about, avatar }) {
     auth.registerUser(email, password, name, about, avatar)
@@ -86,26 +73,21 @@ function App() {
         setToken(res.token);
         localStorage.setItem('token', res.token);
         setCurrentUser(res.data);
-        console.log(res); 
-        console.log(loggedIn);  
-        history.push('/');
-      }
-    }).catch(() => {
+      }   
+    }).then(() => history.push('/'))
+    .catch(() => {
         setIsToolTipOpen(true);
         setAuthSuccess(false);
       });
   } 
-
-  function handleSignin({ email, password }) {
+  function handleSignin({email, password}) {
     auth.loginUser(email, password)
-        .then((data) => {
-        if (data.token) {
-          console.log("signin", data);   
-          setLoggedIn(true);
-          setToken(data.token);
-          console.log("loggedin" , loggedIn); 
-          localStorage.setItem('token', data.token);
-          history.push("/");
+        .then((res) => {
+        if (res && res.token) {
+          setLoggedIn(true); 
+          setToken(res.token);   
+          localStorage.setItem('token', res.token);
+          history.push("/"); 
         }
       })
       .catch((err) => {
@@ -114,7 +96,7 @@ function App() {
         console.log(err);
       });
   } 
-
+  
   function handleLogout() {
     setLoggedIn(false);
     localStorage.removeItem('token');
@@ -122,7 +104,7 @@ function App() {
   }
 
   function handleCardLike(card) {
-   // const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
     // Check one more time if this card was already liked
     const isLiked = card.likes.some(i => i._id === currentUser._id);
     api.updateLike(card._id, !isLiked, token).then((newCard) => {
@@ -134,6 +116,7 @@ function App() {
   }
 
   function handleCardDelete(deletedCard) {
+    const token = localStorage.getItem("token");
     api.deleteCard(deletedCard._id, token).then(() => {
         const newCards = cards.filter((card) => card._id !== deletedCard._id)
         setCards(newCards);
@@ -142,6 +125,7 @@ function App() {
   }
 
   function handleUpdateUser({ name, about }) {
+    const token = localStorage.getItem("token");
     api.editUserInfo({ name, about }, token).then((res) =>{
       setCurrentUser(res.data);
       setIsEditProfilePopupOpen(false);
@@ -149,6 +133,7 @@ function App() {
   }
 
   function handleUpdateAvatar({ avatar }) {
+    const token = localStorage.getItem("token");
     api.setUserAvatar({ avatar }, token).then((res) => {
         setCurrentUser(res.data);
         setIsEditAvatarPopupOpen(false);
@@ -156,6 +141,7 @@ function App() {
   }
 
   function handleAddPlace({ name, link }) {
+    const token = localStorage.getItem("token");
     api.newCard({ name, link }, token).then((newCard) => {
         setCards([...cards, newCard]);
         setIsAddPlacePopupOpen(false);

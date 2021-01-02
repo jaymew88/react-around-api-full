@@ -49,10 +49,7 @@ class Auth {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
-    }).then(this._serverResCheck)
-    .then((res) => {
-      console.log("validitiy", res); // runs 3rd on reload
-    })
+    }).then(this._serverResCheck);
   }
 }
 
