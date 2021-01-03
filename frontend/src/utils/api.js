@@ -44,7 +44,7 @@ class Api {
   }
 
   deleteCard(cardId, token) {
-    return fetch(`${this.baseUrl}/${cardId}/likes`, {
+    return fetch(`${this.baseUrl}/cards/${cardId}`, {
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -53,11 +53,11 @@ class Api {
   }).then(this._serverResCheck);
   }
 
-  updateLike(cardId, cardLiked, token) {
+  updateLike(cardId, isLiked, token) {
     console.log(cardId);
-    console.log(idLiked);
-    return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {  //
-      method: cardLiked ? "PUT" : "DELETE",
+    console.log(isLiked);
+    return fetch(`${this.baseUrl}/cards/${cardId}/likes`, { 
+      method: isLiked ? "PUT" : "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"

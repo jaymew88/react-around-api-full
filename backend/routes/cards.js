@@ -11,8 +11,9 @@ const {
 
 routes.get('/cards', getCards);
 routes.post('/cards', createCard);
-routes.put('/cards/likes/:cardId', likeCard);
-routes.delete('/cards/likes/:cardId', dislikeCard);
+routes.put('/cards/:cardId/likes', likeCard);
+routes.delete('/cards/:cardId/likes', dislikeCard);
+routes.delete('/cards/:id', deleteCard);
 
 routes.post('/cards', celebrate({
   body: Joi.object().keys({

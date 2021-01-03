@@ -25,7 +25,7 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove({ _id: req.params.cardId, owner: req.user._id })
+  Card.findByIdAndDelete({ _id: req.params._id, owner: { _id: req.user._id} }) // { _id: req.params.cardId, owner: req.user._id }
     .then((card) => {
       if (card) {
         res.send({ data: card });

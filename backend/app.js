@@ -33,7 +33,7 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.use(express.static('build'))
+app.use(express.static('build'));
 app.use(express.json(), cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
