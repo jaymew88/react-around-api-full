@@ -54,7 +54,7 @@ class Api {
   }
 
   updateLike(cardId, cardLiked, token) {
-    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {  //
       method: cardLiked ? "PUT" : "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`,
