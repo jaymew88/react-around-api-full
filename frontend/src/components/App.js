@@ -111,6 +111,7 @@ function App() {
       console.log(isLiked); //#4 oncardlike False
       // Update the state
       setCards(newCards);
+      console.log(newCards);
     }).catch((err) => console.log(err));
   }
 
