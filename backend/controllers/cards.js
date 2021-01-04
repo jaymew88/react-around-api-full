@@ -6,7 +6,6 @@ const BadRequestErr = require('../errors/badrequest-err');
 const getCards = (req, res, next) => {
   Card.find({})
     .populate('owner')
-   // .populate('likes')
     .then((cards) => res.send({ data: cards }))
     .catch(next);
 };
@@ -46,7 +45,6 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-  //  .populate('likes')
     .then((card) => {
       if (card) {
         res.send(card);
@@ -67,7 +65,6 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
- // .populate('likes')
   .then((card) => {
     if (card) {
       res.send(card);

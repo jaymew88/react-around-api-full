@@ -12,7 +12,7 @@ function Card(props) {
     `card__delete-button ${isOwn ? '' : 'card__delete-button_hidden'}`);
 
   const cardLikeButtonClassName = (
-    `button card__like-button ${isLiked ? 'card__like-button_active' : ''}`); 
+    `card__like-button ${isLiked ? 'card__like-button_active' : ''}`); 
    
   // Delete Button Visiblility
   React.useEffect(() => {
@@ -25,7 +25,6 @@ function Card(props) {
   React.useEffect(() => {
     if (props.card.likes) {
       props.card.likes.includes(currentUser._id) ? setIsLiked(true) : setIsLiked(false);
-      console.log("Card.js", isLiked); // #1 onload all False
     }
   }, [props.card])
 
@@ -72,7 +71,7 @@ function Card(props) {
         <div className="card__like">
           <button 
             type="button" 
-            className={`${cardLikeButtonClassName}${isLiked ? 'card__like-button_active' : ''}`} 
+            className={cardLikeButtonClassName}
             onClick={handleLikeClick} 
             aria-label="Like Button" 
           ></button>

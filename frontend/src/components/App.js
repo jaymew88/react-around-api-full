@@ -107,11 +107,7 @@ function App() {
     const isLiked = card.likes.includes(currentUser._id);
     api.updateLike(card._id, !isLiked, token).then((newCard) => { 
       const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
-      console.log("card._id", card._id); // #3 oncardlike correct
-      console.log(isLiked); //#4 oncardlike False
-      // Update the state
       setCards(newCards);
-      console.log(newCards);
     }).catch((err) => console.log(err));
   }
 
