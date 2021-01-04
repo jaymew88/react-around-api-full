@@ -6,7 +6,7 @@ const BadRequestErr = require('../errors/badrequest-err');
 const getCards = (req, res, next) => {
   Card.find({})
     .populate('owner')
-    .populate('likes')
+   // .populate('likes')
     .then((cards) => res.send({ data: cards }))
     .catch(next);
 };
@@ -46,10 +46,10 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .populate('likes')
+  //  .populate('likes')
     .then((card) => {
       if (card) {
-        res.send({ card });
+        res.send(card);
       } else {
         throw new NotFoundErr('Card not found');
       }
@@ -67,10 +67,10 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-  .populate('likes')
+ // .populate('likes')
   .then((card) => {
     if (card) {
-      res.send({ card });
+      res.send(card);
     } else {
       throw new NotFoundErr('Card not found');
     }
