@@ -104,20 +104,17 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const token = localStorage.getItem('token');
-    // Check one more time if this card was already liked
-    const isLiked = card.likes.some((i) => i === currentUser._id);
-   // const isLiked = card.likes.some(i => i._id === currentUser._id); // original from previous sprint
-    api.updateLike(card._id, isLiked, token).then((newCard) => {
-      // Create a new array based on the existing one and putting a new card into it
+    const isLiked = card.likes.includes(currentUser._id);
+    api.updateLike(card._id, !isLiked, token).then((newCard) => { 
       const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
+      console.log("card._id", card._id); // #3 oncardlike correct
+      console.log(isLiked); //#4 oncardlike False
       // Update the state
       setCards(newCards);
     }).catch((err) => console.log(err));
   }
 
   function handleCardDelete(deletedCard) {
-   // const token = localStorage.getItem("token");
     api.deleteCard(deletedCard._id, token).then(() => {
         const newCards = cards.filter((card) => card._id !== deletedCard._id)
         setCards(newCards);
@@ -126,7 +123,6 @@ function App() {
   }
 
   function handleUpdateUser({ name, about }) {
-  //  const token = localStorage.getItem("token");
     api.editUserInfo({ name, about }, token).then((res) =>{
       setCurrentUser(res.data);
       setIsEditProfilePopupOpen(false);
@@ -134,7 +130,6 @@ function App() {
   }
 
   function handleUpdateAvatar({ avatar }) {
-  //  const token = localStorage.getItem("token");
     api.setUserAvatar({ avatar }, token).then((res) => {
         setCurrentUser(res.data);
         setIsEditAvatarPopupOpen(false);
@@ -142,7 +137,6 @@ function App() {
   }
 
   function handleAddPlace({ name, link }) {
-  //  const token = localStorage.getItem("token");
     api.newCard({ name, link }, token).then((newCard) => {
         setCards([...cards, newCard]);
         setIsAddPlacePopupOpen(false);

@@ -54,8 +54,8 @@ class Api {
   }
 
   updateLike(cardId, isLiked, token) {
-    console.log(cardId);
-    console.log(isLiked);
+    console.log(cardId); // #1 oncardlike (correct)
+    console.log(isLiked); // #2 oncardlike (true)
     return fetch(`${this.baseUrl}/cards/${cardId}/likes`, { 
       method: isLiked ? "PUT" : "DELETE",
       headers: {
