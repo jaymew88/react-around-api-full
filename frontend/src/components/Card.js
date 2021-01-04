@@ -24,7 +24,7 @@ function Card(props) {
   // Check for likes on card
   React.useEffect(() => {
     if (props.card.likes) {
-      props.card.likes.some(i => i === currentUser._id) ? setIsLiked(true) : setIsLiked(false);
+      props.card.likes.includes(currentUser._id) ? setIsLiked(true) : setIsLiked(false);
       console.log("Card.js", isLiked); // #1 onload all False
     }
   }, [props.card])

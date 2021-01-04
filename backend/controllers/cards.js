@@ -49,7 +49,7 @@ const likeCard = (req, res, next) => {
     .populate('likes')
     .then((card) => {
       if (card) {
-        res.send(card);
+        res.send({ card });
       } else {
         throw new NotFoundErr('Card not found');
       }
@@ -70,7 +70,7 @@ const dislikeCard = (req, res, next) => {
   .populate('likes')
   .then((card) => {
     if (card) {
-      res.send(card);
+      res.send({ card });
     } else {
       throw new NotFoundErr('Card not found');
     }
