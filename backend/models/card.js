@@ -23,12 +23,12 @@ const cardsSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
-    }],
+  }],
   createdAt: {
     type: Date,
     default: Date.now,
     required: true,
-  }
+  },
 });
 
 module.exports = mongoose.model('card', cardsSchema);

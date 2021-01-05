@@ -5,7 +5,7 @@ const {
   getUserById,
   updateUser,
   updateAvatar,
-  userInfo
+  userInfo,
 } = require('../controllers/users');
 
 routes.get('/users', getUsers);
@@ -29,5 +29,3 @@ routes.patch('/users/me/avatar', celebrate({
 }), updateAvatar);
 
 module.exports = routes;
-
-

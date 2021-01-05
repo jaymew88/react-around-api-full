@@ -9,6 +9,7 @@ const users = require('./routes/users');
 const auth = require('./middleware/auth');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
+const NotFoundErr = require('./errors/not-found-err');
 
 const { PORT = 3000 } = process.env;
 
@@ -58,15 +59,14 @@ app.post('/signup', celebrate({
 
 app.use('/', auth, cards);
 app.use('/', auth, users);
-
-app.get('*',(req,res)=>{
-  return res.status(404).send({ "message": "Requested resource not found" });
- });
+app.use('*', () => {
+  throw new NotFoundErr('Requested Resource not found');
+});
 
 app.use(errorLogger);
 app.use(errors());
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   const { statusCode = 500, message } = err;
   res
     .status(statusCode)
@@ -77,6 +77,6 @@ app.use((err, req, res, next) => {
     });
 });
 
- app.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`App is listening on PORT ${PORT}`);
 });

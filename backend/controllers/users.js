@@ -5,6 +5,7 @@ const User = require('../models/user');
 const BadRequestErr = require('../errors/badrequest-err');
 const UnauthorizationErr = require('../errors/unauth-err');
 const NotFoundErr = require('../errors/not-found-err');
+const ConflictErr = require('../errors/conflict-err');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -14,15 +15,15 @@ const getUsers = (req, res, next) => {
       if (users === undefined) {
         throw new NotFoundErr('No users found');
       }
-      res.send({ data: users })
-     })
+      res.send({ data: users });
+    })
     .catch(next);
 };
 
 const getUserById = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
-      if(user) {
+      if (user) {
         res.send({ data: user });
       } else {
         throw new NotFoundErr('User ID not found');
@@ -48,32 +49,54 @@ const userInfo = (req, res, next) => {
         throw new NotFoundErr('User ID does not exist');
       }
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestErr('Invalid user ID');
       } else {
         throw err;
       }
-    }).catch(next);
-}
+    })
+    .catch(next);
+};
 
 const createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
-
-  bcrypt.hash(password, 10).then(hash => {
-    return User.create({ name, about, avatar, email, password: hash })
-      .then((user) => {
-        const token = jwt.sign(
-          { _id: user._id},
-          NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-          { expiresIn: '7d' }
-       );
-   //   res.cookie('token', token, { httpOnly: true });
-      res.send({ data: user, token });
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => {
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      })
+        .then((user) => {
+          const token = jwt.sign(
+            { _id: user._id },
+            NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+            { expiresIn: '7d' },
+          );
+          res.send({
+            data: {
+              name: user.name,
+              about: user.about,
+              avatar: user.avatar,
+              email: user.email,
+              _id: user.id,
+            },
+            token,
+          })
+            .catch((err) => {
+              if (err.name === 'MongoError' || err.code === 11000) {
+                throw new ConflictErr('Email already exists');
+              }
+            });
+        })
+        .catch(next);
     });
-  })
-  .catch(next);
-}
+};
 
 const updateUser = (req, res, next) => {
   const { name, about } = req.body;
@@ -104,15 +127,14 @@ const updateAvatar = (req, res, next) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-   return User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-        { expiresIn: '7d' }
-        );
-      //  res.cookie('token', token, { httpOnly: true });
-        res.send({ token });
+        { expiresIn: '7d' },
+      );
+      res.send({ token });
     })
     .catch(() => {
       throw new UnauthorizationErr('Invalid email or password');
@@ -127,5 +149,5 @@ module.exports = {
   updateUser,
   updateAvatar,
   login,
-  userInfo
+  userInfo,
 };

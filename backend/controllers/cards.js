@@ -1,4 +1,3 @@
-
 const Card = require('../models/card');
 const NotFoundErr = require('../errors/not-found-err');
 const BadRequestErr = require('../errors/badrequest-err');
@@ -15,16 +14,18 @@ const createCard = (req, res, next) => {
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => {
-      if (!card) {
-        throw new BadRequestErr('Card validation failed');
-      }
       res.send({ data: card });
+    })
+    .card((err) => {
+      if (err.name === 'ValidationError') {
+        throw new BadRequestErr('Invalid URL, card can not be created');
+      }
     })
     .catch(next);
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndDelete({ _id: req.params.id, owner: { _id: req.user._id} }) // { _id: req.params.cardId, owner: req.user._id }
+  Card.findByIdAndDelete({ _id: req.params.id, owner: { _id: req.user._id } })
     .then((card) => {
       if (card) {
         res.send({ data: card });
@@ -37,7 +38,7 @@ const deleteCard = (req, res, next) => {
         throw new BadRequestErr('Invalid card id');
       }
     }).catch(next);
-}
+};
 
 const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
@@ -65,18 +66,18 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-  .then((card) => {
-    if (card) {
-      res.send(card);
-    } else {
-      throw new NotFoundErr('Card not found');
-    }
-  })
-  .catch((err) => {
-    if (err.name === 'CastError') {
-      throw new BadRequestErr('Invalid card id');
-    }
-  }).catch(next);
+    .then((card) => {
+      if (card) {
+        res.send(card);
+      } else {
+        throw new NotFoundErr('Card not found');
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequestErr('Invalid card id');
+      }
+    }).catch(next);
 };
 
 module.exports = {

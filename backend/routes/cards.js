@@ -6,14 +6,40 @@ const {
   createCard,
   deleteCard,
   likeCard,
-  dislikeCard
+  dislikeCard,
 } = require('../controllers/cards');
 
 routes.get('/cards', getCards);
-routes.post('/cards', createCard);
-routes.put('/cards/:cardId/likes', likeCard);
-routes.delete('/cards/:cardId/likes', dislikeCard);
-routes.delete('/cards/:id', deleteCard);
+routes.post('/cards', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().pattern(new RegExp('^https?:\\/\\/(www\\.)?[^\\s~<>]+\\.[^\\s~<>]+#?')),
+  }),
+}),
+createCard);
+routes.put('/cards/:cardId/likes', celebrate({
+  [Segments.PARAMS]: Joi.object({
+    id: Joi.string().required().length(24).hex(),
+  }),
+}),
+likeCard);
+routes.delete('/cards/:cardId/likes', celebrate({
+  [Segments.PARAMS]: Joi.object({
+    id: Joi.string().required().length(24).hex(),
+  }),
+}),
+dislikeCard);
+routes.delete('/cards/:id', celebrate({
+  headers: Joi.object()
+    .keys({
+      authorization: Joi.string().required(),
+    })
+    .options({ allowUnknown: true }),
+  params: Joi.object().keys({
+    id: Joi.string().required().length(24).hex(),
+  }),
+}),
+deleteCard);
 
 routes.post('/cards', celebrate({
   body: Joi.object().keys({
