@@ -63,39 +63,40 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  bcrypt.hash(password, 10)
-    .then((hash) => {
-      User.create({
-        name,
-        about,
-        avatar,
-        email,
-        password: hash,
-      })
-        .then((user) => {
-          const token = jwt.sign(
-            { _id: user._id },
-            NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-            { expiresIn: '7d' },
-          );
-          res.send({
-            data: {
-              name: user.name,
-              about: user.about,
-              avatar: user.avatar,
-              email: user.email,
-              _id: user.id,
-            },
-            token,
-          })
-            .catch((err) => {
-              if (err.name === 'MongoError' || err.code === 11000) {
-                throw new ConflictErr('Email already exists');
-              }
+
+  User.findOne({ email })
+    .then((userExists) => {
+      if (userExists) {
+        throw new ConflictErr('User already exists.');
+      } else {
+        bcrypt.hash(password, 10)
+          .then((hash) => User.create({
+            name,
+            about,
+            avatar,
+            email,
+            password: hash,
+          }))
+          .then((user) => {
+            const token = jwt.sign(
+              { _id: user._id },
+              NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+              { expiresIn: '7d' },
+            );
+            res.send({
+              data: {
+                name: user.name,
+                about: user.about,
+                avatar: user.avatar,
+                email: user.email,
+                _id: user.id,
+              },
+              token,
             });
-        })
-        .catch(next);
-    });
+          });
+      }
+    })
+    .catch((err) => next(err));
 };
 
 const updateUser = (req, res, next) => {
