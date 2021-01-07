@@ -96,7 +96,7 @@ const createUser = (req, res, next) => {
           });
       }
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const updateUser = (req, res, next) => {
