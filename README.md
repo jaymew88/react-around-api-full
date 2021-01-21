@@ -9,7 +9,6 @@ Create a new user with the signup button, or use the default login:
 ## Overview
 * Intro
 * Description
-* Figma
 * Technologies
 
 ### Intro
@@ -22,9 +21,6 @@ This repository contains the full API of "Around the U.S." project that features
 
 This is a single page responsive website using CSS, HTML and JavaScript,following the BEM methodology. This was a project from a series of briefs, and uses a BEM CSS nested file structure. This respository contains the front-end project on React with added authorizations and register functions and the back-end project built using Express, Nodejs and MongoDB. 
 
-### Figma
-
-Link to project on Figma: https://www.figma.com/file/PJbelNQkbotPz2M1Lth55j/Sprint-14-(EN)?node-id=0%3A1 
 
 ### Technologies
 
